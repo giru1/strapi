@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_shared_header_lefts",
+  "info": {
+    "displayName": "HeaderLeft"
+  },
+  "options": {},
+  "attributes": {
+    "Logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "MainFone": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "LogoTitle": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

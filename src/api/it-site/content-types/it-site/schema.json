@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "it_sites",
+  "info": {
+    "singularName": "it-site",
+    "pluralName": "it-sites",
+    "displayName": "ITSite"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Head": {
+      "type": "component",
+      "component": "shared.head",
+      "repeatable": false
+    },
+    "Header": {
+      "type": "component",
+      "component": "shared.header",
+      "repeatable": false
+    },
+    "Card": {
+      "type": "component",
+      "component": "shared.card",
+      "repeatable": true
+    },
+    "LeftDescription": {
+      "type": "component",
+      "component": "shared.left-description",
+      "repeatable": false
+    }
+  }
+}

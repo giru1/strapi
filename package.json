@@ -1,0 +1,64 @@
+{
+  "name": "strapi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Strapi application",
+  "scripts": {
+    "build": "strapi build",
+    "console": "strapi console",
+    "deploy": "strapi deploy",
+    "dev": "strapi develop",
+    "develop": "strapi develop",
+    "seed:example": "node ./scripts/seed.js",
+    "start": "strapi start",
+    "strapi": "strapi",
+    "upgrade": "npx @strapi/upgrade latest",
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "generate:schema": "node scripts/generate-schema.js",
+    "create:structure": "node scripts/create-structure.js",
+    "setup:news": "npm run create:structure && npm run generate:schema",
+    "import-news": "node scripts/import-news.js",
+    "diagnose": "node scripts/diagnose.js",
+    "docker:build": "docker build -t orgma-strapi .",
+    "docker:run": "docker run -p 1337:1337 --env-file .env orgma-strapi",
+    "docker:compose": "docker-compose up strapi",
+    "docker:compose:dev": "docker-compose up strapi minio",
+    "docker:compose:down": "docker-compose down",
+    "strapi:docker:up": "cd apps/strapi && docker-compose -f ../../docker-compose.yml up -d",
+    "strapi:docker:down": "cd apps/strapi && docker-compose -f ../../docker-compose.yml down",
+    "strapi:docker:logs": "cd apps/strapi && docker-compose -f ../../docker-compose.yml logs -f",
+    "dev:all": "concurrently \"npm run strapi:docker:up\" \"npm run dev --workspace=apps/news\""
+  },
+  "dependencies": {
+    "@avorati/strapi-provider-upload-minio": "^1.2.1",
+    "@ckeditor/strapi-plugin-ckeditor": "^1.1.1",
+    "@strapi/plugin-cloud": "5.23.4",
+    "@strapi/plugin-users-permissions": "5.23.4",
+    "@strapi/provider-upload-aws-s3": "^5.23.4",
+    "@strapi/strapi": "5.23.4",
+    "axios": "^1.12.2",
+    "better-sqlite3": "11.3.0",
+    "form-data": "^4.0.4",
+    "fs-extra": "^10.0.0",
+    "mime-types": "^2.1.27",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "styled-components": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "esbuild": "0.25.9",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=22.x.x",
+    "npm": ">=6.0.0"
+  },
+  "strapi": {
+    "uuid": "b8873f6c-7f59-419c-8286-603342302a3c",
+    "installId": "eb9aa329e46810278b86093d0ebb31414c617eff81021762071a9e9a8f9551af"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_shared_footers",
+  "info": {
+    "displayName": "Footer"
+  },
+  "options": {},
+  "attributes": {
+    "FooterAddress": {
+      "type": "string"
+    },
+    "FooterPhone": {
+      "type": "string"
+    },
+    "FooterPhonePK": {
+      "type": "string"
+    },
+    "FooterEmail": {
+      "type": "string"
+    },
+    "FooterMenu": {
+      "type": "component",
+      "component": "shared.footer-menu",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

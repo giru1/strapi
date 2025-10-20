@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pay_sites",
+  "info": {
+    "singularName": "pay-site",
+    "pluralName": "pay-sites",
+    "displayName": "PaySite"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Head": {
+      "type": "component",
+      "component": "shared.head",
+      "repeatable": false
+    },
+    "Header": {
+      "type": "component",
+      "component": "shared.header",
+      "repeatable": false
+    },
+    "LeftDescription": {
+      "type": "component",
+      "component": "shared.left-description",
+      "repeatable": false
+    }
+  }
+}

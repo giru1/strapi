@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_headers",
+  "info": {
+    "displayName": "HeaderRight"
+  },
+  "options": {},
+  "attributes": {
+    "HeaderTitle": {
+      "type": "string"
+    },
+    "HeaderDescription": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_sidebars",
+  "info": {
+    "displayName": "Sidebar"
+  },
+  "options": {},
+  "attributes": {
+    "SidebarMenu": {
+      "type": "component",
+      "component": "shared.link",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

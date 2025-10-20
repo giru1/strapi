@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_left_descriptions",
+  "info": {
+    "displayName": "LeftDescription"
+  },
+  "options": {},
+  "attributes": {
+    "Description": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

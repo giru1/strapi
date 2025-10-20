@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "main_sites",
+  "info": {
+    "singularName": "main-site",
+    "pluralName": "main-sites",
+    "displayName": "MainSite"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Head": {
+      "type": "component",
+      "component": "shared.head",
+      "repeatable": false
+    }
+  }
+}
