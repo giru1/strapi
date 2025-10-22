@@ -1,0 +1,8 @@
+FROM minio/minio:RELEASE.2025-04-22T22-12-26Z
+
+# Добавьте кастомные настройки если нужно
+COPY cors.json /etc/minio/cors.json
+
+EXPOSE 9000 9001
+
+CMD ["server", "/data", "--console-address", ":9001"]\

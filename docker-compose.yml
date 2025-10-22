@@ -3,27 +3,49 @@ version: '3.8'
 services:
   strapi:
     build:
-      context: ./apps/strapi
+      context: ./
       dockerfile: Dockerfile
     container_name: orgma-strapi
     ports:
       - "1337:1337"
     environment:
       - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=1337
+      - DATABASE_CLIENT=sqlite
+      - DATABASE_FILENAME=.tmp/data.db
+      - APP_KEYS=4Ku0FkMohFpidOJmSd2qOg==,BfvgOMXOzmb7H+pCFRRpjw==,DVl0HZbuRtELxlzsrqiC3A==,c4IdkAtKstDZV9c0m3MkUw==
+      - API_TOKEN_SALT=d4Vtnqeg3kwOSi2t4SSSXw==
+      - ADMIN_JWT_SECRET=AtZZ4/v/DAz1VAgK93Pt9g==
+      - JWT_SECRET=xGviA8sDQQ8YKJ7X9QswYA==
+      - S3_ACCESS_KEY_ID=lhUaWNiDu1cortNlnu8F
+      - S3_SECRET_ACCESS_KEY=vOzrxdiLRLChyyUFxXQOetKKJv3ivWgOqcnANKyP
+      - S3_REGION=us-east-1
+      - S3_BUCKET=assets.orgma.ru
+      - S3_ENDPOINT=http://minio:9000
+      - S3_FORCE_PATH_STYLE=true
     env_file:
-      - ./apps/strapi/.env
+      - .env
     volumes:
-      - ./apps/strapi/config:/app/config
-      - ./apps/strapi/src:/app/src
-      - ./apps/strapi/public:/app/public
+      - ./config:/app/config        # ← ИСПОЛЬЗУЙТЕ bind mounts
+      - ./src:/app/src              # ← ИСПОЛЬЗУЙТЕ bind mounts
+      - ./public:/app/public        # ← ИСПОЛЬЗУЙТЕ bind mounts
+      - ./types:/app/types          # ← ИСПОЛЬЗУЙТЕ bind mounts
+      - ./scripts:/app/scripts      # ← ИСПОЛЬЗУЙТЕ bind mounts
+      - ./data:/app/data            # ← ИСПОЛЬЗУЙТЕ bind mounts
       - strapi-data:/app/.tmp
+    depends_on:
+      - minio
     networks:
       - orgma-network
 
 
   # Если нужно, добавьте MinIO/S3
   minio:
-    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    build:
+      context: ./
+      dockerfile: Dockerfile.minio
+    image: yagofarovvadim/orgma-minio:latest
     container_name: orgma-minio
     ports:
       - "9000:9000"
@@ -31,16 +53,17 @@ services:
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=admin123
-    command: server /data --console-address ":9001"
     volumes:
       - minio-data:/data
-      - ./cors.json:/etc/minio/cors.json
+    restart: unless-stopped
     networks:
       - orgma-network
 
 volumes:
   strapi-data:
+    driver: local
   minio-data:
+    driver: local
 
 networks:
   orgma-network:
