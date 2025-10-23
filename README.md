@@ -92,3 +92,17 @@ docker build -f Dockerfile.minio -t yagofarovvadim/orgma-minio:latest .
 
 # Или запустить с сборкой если образы не собраны
 sudo docker-compose up -d --build
+
+
+
+# Остановите контейнеры
+sudo docker-compose down
+
+# Очистите кэш браузера (ОБЯЗАТЕЛЬНО!)
+# Или используйте режим инкогнито
+
+# Пересоберите и запустите
+sudo docker-compose up -d --build
+
+# Проверьте логи
+sudo docker-compose logs strapi -f
