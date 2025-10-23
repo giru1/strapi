@@ -10,20 +10,20 @@ services:
       - "1337:1337"
     environment:
       - NODE_ENV=production
-      - HOST=0.0.0.0
-      - PORT=1337
-      - DATABASE_CLIENT=sqlite
-      - DATABASE_FILENAME=.tmp/data.db
-      - APP_KEYS=4Ku0FkMohFpidOJmSd2qOg==,BfvgOMXOzmb7H+pCFRRpjw==,DVl0HZbuRtELxlzsrqiC3A==,c4IdkAtKstDZV9c0m3MkUw==
-      - API_TOKEN_SALT=d4Vtnqeg3kwOSi2t4SSSXw==
-      - ADMIN_JWT_SECRET=AtZZ4/v/DAz1VAgK93Pt9g==
-      - JWT_SECRET=xGviA8sDQQ8YKJ7X9QswYA==
-      - S3_ACCESS_KEY_ID=lhUaWNiDu1cortNlnu8F
-      - S3_SECRET_ACCESS_KEY=vOzrxdiLRLChyyUFxXQOetKKJv3ivWgOqcnANKyP
-      - S3_REGION=us-east-1
-      - S3_BUCKET=assets.orgma.ru
-      - S3_ENDPOINT=http://minio:9000
-      - S3_FORCE_PATH_STYLE=true
+#      - HOST=0.0.0.0
+#      - PORT=1337
+#      - DATABASE_CLIENT=sqlite
+#      - DATABASE_FILENAME=.tmp/data.db
+#      - APP_KEYS=4Ku0FkMohFpidOJmSd2qOg==,BfvgOMXOzmb7H+pCFRRpjw==,DVl0HZbuRtELxlzsrqiC3A==,c4IdkAtKstDZV9c0m3MkUw==
+#      - API_TOKEN_SALT=d4Vtnqeg3kwOSi2t4SSSXw==
+#      - ADMIN_JWT_SECRET=AtZZ4/v/DAz1VAgK93Pt9g==
+#      - JWT_SECRET=xGviA8sDQQ8YKJ7X9QswYA==
+#      - S3_ACCESS_KEY_ID=lhUaWNiDu1cortNlnu8F
+#      - S3_SECRET_ACCESS_KEY=vOzrxdiLRLChyyUFxXQOetKKJv3ivWgOqcnANKyP
+#      - S3_REGION=us-east-1
+#      - S3_BUCKET=assets.orgma.ru
+#      - S3_ENDPOINT=http://minio:9000
+#      - S3_FORCE_PATH_STYLE=true
     env_file:
       - .env
     volumes:
