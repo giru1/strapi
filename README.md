@@ -102,7 +102,7 @@ sudo docker compose down
 # Или используйте режим инкогнито
 
 # Пересоберите и запустите
-sudo docker compose up -d --build
+sudo docker compose up -d --build 
 
 # Проверьте логи
 sudo docker compose logs strapi -f
