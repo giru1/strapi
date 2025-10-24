@@ -61,7 +61,6 @@ Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/
 <sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
 
 
-
 # Соберите образ Strapi (если еще не собрали)
 docker build -t monorepo-strapi:latest ./apps/strapi
 
@@ -80,7 +79,6 @@ docker build -t orgma-strapi:latest .
 
 # Или запустить с сборкой если образы не собраны
 sudo docker compose up -d --build
-
 
 
 # Остановите контейнеры
