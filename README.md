@@ -74,20 +74,8 @@ docker push yagofarovvadim/orgma-strapi:latest
 docker push yagofarovvadim/orgma-minio:latest
 
 
-docker-compose up -d
-
-
 # Соберите образ Strapi
 docker build -t orgma-strapi:latest .
-
-# Или с вашим Docker Hub именем
-docker build -t yagofarovvadim/orgma-strapi:latest .
-
-
-
-
-docker build -f Dockerfile.minio -t yagofarovvadim/orgma-minio:latest .
-
 
 
 # Или запустить с сборкой если образы не собраны
