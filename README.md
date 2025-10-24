@@ -71,7 +71,7 @@ docker tag minio/minio:RELEASE.2025-04-22T22-12-26Z yagofarovvadim/orgma-minio:l
 # Отправьте в Docker Hub (если нужно)
 docker push yagofarovvadim/orgma-strapi:latest
 docker push yagofarovvadim/orgma-minio:latest
-
+  
 
 # Соберите образ Strapi
 docker build -t orgma-strapi:latest .
