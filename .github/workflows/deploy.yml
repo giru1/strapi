@@ -2,7 +2,7 @@ name: Build and Deploy to Server
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
 
 env:
   REGISTRY: docker.io
@@ -61,39 +61,34 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build-and-push
 
     steps:
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            set -e
-            
-            echo "=== Switching to project directory ==="
-            cd /home/docer/strapi-minio
-            
-            echo "=== Pulling latest code ==="
-            git pull origin main
-            
-            echo "=== Pulling latest Docker images ==="
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/orgma-strapi:latest
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/orgma-minio:latest
-            
-            echo "=== Stopping and removing old containers ==="
-            docker-compose down || true
-            
-            echo "=== Cleaning up old images ==="
-            docker system prune -f
-            
-            echo "=== Starting new containers ==="
-            docker-compose up -d
-            
-            echo "=== Checking container status ==="
-            docker-compose ps
-            
-            echo "=== Deployment completed successfully ==="
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy application
+        run: |
+          echo "=== Switching to project directory ==="
+          cd /home/docer/strapi-minio
+          
+          echo "=== Pulling latest code ==="
+          git pull origin main
+          
+          echo "=== Stopping old containers ==="
+          docker-compose down || true
+          
+          echo "=== Cleaning up ==="
+          docker system prune -f
+          
+          echo "=== Building new images ==="
+          docker-compose build --no-cache
+          
+          echo "=== Starting new containers ==="
+          docker-compose up -d
+          
+          echo "=== Checking container status ==="
+          docker-compose ps
+          
+          echo "=== Deployment completed successfully ==="
