@@ -75,10 +75,11 @@ jobs:
 
       - name: Deploy application
         run: |
+          echo "=== Switching to project directory ==="
           cd /home/docer/strapi-minio
 
-          echo "=== Setting up GitHub authentication ==="
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/giru1/strapi.git
+          echo "=== Changing remote to HTTPS ==="
+          git remote set-url origin https://github.com/giru1/strapi.git
 
           echo "=== Pulling latest code ==="
           git pull origin main
@@ -87,3 +88,4 @@ jobs:
           docker-compose down || true
           docker-compose build --no-cache
           docker-compose up -d
+          docker-compose ps
