@@ -75,17 +75,31 @@ jobs:
 
       - name: Deploy application
         run: |
-          echo "=== Switching to project directory ==="
+          echo "=== Full sync from GitHub ==="
+
+          # Создаем backup важных данных
+          cp -r /home/docer/strapi-minio/.tmp /tmp/backup-tmp 2>/dev/null || true
+          cp -r /home/docer/strapi-minio/data /tmp/backup-data 2>/dev/null || true
+
+          # Удаляем старую версию
+          rm -rf /home/docer/strapi-minio
+
+          # Клонируем заново
+          git clone https://github.com/giru1/strapi.git /home/docer/strapi-minio
+
+          # Восстанавливаем данные
+          cp -r /tmp/backup-tmp /home/docer/strapi-minio/.tmp 2>/dev/null || true
+          cp -r /tmp/backup-data /home/docer/strapi-minio/data 2>/dev/null || true
+
           cd /home/docer/strapi-minio
-
-          echo "=== Changing remote to HTTPS ==="
-          git remote set-url origin https://github.com/giru1/strapi.git
-
-          echo "=== Pulling latest code ==="
-          git pull origin main
 
           echo "=== Deploying ==="
           docker-compose down || true
+          docker system prune -f
           docker-compose build --no-cache
           docker-compose up -d
+
+          echo "=== Health check ==="
+          sleep 30
           docker-compose ps
+          curl -f http://localhost:1337 && echo "Strapi is running!" || echo "Strapi starting..."
