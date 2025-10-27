@@ -94,12 +94,12 @@ jobs:
           cd /home/docer/strapi-minio
 
           echo "=== Deploying ==="
-          docker-compose down || true
+          docker compose down || true
           docker system prune -f
-          docker-compose build --no-cache
-          docker-compose up -d
+          docker compose build --no-cache
+          docker compose up -d
 
           echo "=== Health check ==="
           sleep 30
-          docker-compose ps
+          docker compose ps
           curl -f http://localhost:1337 && echo "Strapi is running!" || echo "Strapi starting..."
