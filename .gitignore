@@ -9,7 +9,7 @@ minio-data/
 
 # Strapi build files
 .build/
-.tmp/
+
 .cache/
 dist/
 .strapi/
