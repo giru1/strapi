@@ -81,7 +81,7 @@ jobs:
           # Сохраняем .env
           if [ -f .env ]; then
           cp .env /tmp/strapi-env-backup
-          fi
+          fi  
           
           # Обновляем код через git (игнорируя .env)
           git fetch origin
