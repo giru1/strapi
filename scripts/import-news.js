@@ -1,3 +1,4 @@
+require('dotenv').config();
 const axios = require('axios');
 const fs = require('fs');
 
@@ -226,7 +227,7 @@ async function uploadGalleryImages(imageUrls) {
 }
 
 // Функция для проверки данных перед созданием новости
-function validateNewsData(item, categoryId, authorId, mainImageId, galleryImageIds) {
+function validateNewsData(item, categoryId, authorId) {
     const errors = [];
 
     if (!item.title) errors.push('отсутствует заголовок');
