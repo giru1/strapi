@@ -2,8 +2,8 @@ const axios = require('axios');
 const fs = require('fs');
 
 // Конфигурация Strapi
-const STRAPI_URL = 'http://localhost:1337';
-const API_TOKEN = '50d5040f74c057b6d5b8ae58c53b81b43feea4736f9e557403b3a5f4554aff7053c89ce5a1f0dcd8652dbd3a86461a7ab20aca9d34bd3a2eb3ceefbabc257a10033ebc159733dff681b4b8715d2157df20a79e17fda6f86e9b33b9a2e50646643bf8d95b1c0bba90890a94960f01588cc10a26ef10e2f41d5ecf45a7b8708bbf';
+const STRAPI_URL = process.env.PUBLIC_URL;
+const API_TOKEN = process.env.APP_STRAPI_TOKEN;
 
 // Функция для детального логирования ошибок
 function logErrorDetails(error, context = '') {
