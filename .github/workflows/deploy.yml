@@ -102,10 +102,10 @@ jobs:
           echo "=== Deploying ==="
           cd /home/docer/strapi-minio
           
-          sudo docker compose down || true
-          sudo docker system prune -f
-          sudo docker compose build --no-cache
-          sudo docker compose up -d
-          sudo docker compose ps
+          docker compose down || true
+          docker system prune -f
+          docker compose build --no-cache
+          docker compose up -d
+          docker compose ps
           
           echo "=== Deployment completed successfully ==="
