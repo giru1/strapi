@@ -1,4 +1,4 @@
-export default ({ env }) => ({
+export default ( ) => ({
     contentSecurityPolicy: {
         useDefaults: true,
         directives: {
@@ -7,20 +7,16 @@ export default ({ env }) => ({
                 "'self'",
                 'data:',
                 'blob:',
-                'http://localhost:1337',
-                'http://10.1.30.17:1337',
-                'http://localhost:9000',
-                'http://10.1.30.17:9000',
+                'http://db.web.orgma.ru',
+                'http://s3.web.orgma.ru',
                 'assets.orgma.ru'
             ],
             'media-src': [
                 "'self'",
                 'data:',
                 'blob:',
-                'http://localhost:1337',
-                'http://10.1.30.17:1337',
-                'http://localhost:9000',
-                'http://10.1.30.17:9000',
+                'http://db.web.orgma.ru',
+                'http://s3.web.orgma.ru',
                 'assets.orgma.ru'
             ],
             'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],

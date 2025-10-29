@@ -1,6 +1,6 @@
 [
   {
-    "AllowedOrigins": ["http://localhost:1337"],
+    "AllowedOrigins": ["db.web.orgma.ru"],
     "AllowedMethods": ["GET", "POST", "PUT", "DELETE"],
     "AllowedHeaders": ["*"],
     "ExposeHeaders": ["ETag"],
