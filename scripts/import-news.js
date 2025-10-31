@@ -14,7 +14,7 @@ function logErrorDetails(error, context = '') {
         // Ошибка от сервера
         console.log(`   📡 Статус: ${error.response.status}`);
         console.log(`   📝 Сообщение: ${error.response.statusText}`);
-        console.log(`   🔗 URL: ${error.response.config?.url}`);
+        console.log(`   🔗 URL: ${error.response.config ? error.response.config.url : 'Unknown'}`);
 
         if (error.response.data) {
             console.log(`   📊 Данные ответа:`, JSON.stringify(error.response.data, null, 2));
