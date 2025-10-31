@@ -78,17 +78,19 @@ docker build -t orgma-strapi:latest .
 
 
 # Или запустить с сборкой если образы не собраны
-sudo docker compose up -d --build
+docker compose up -d --build
 
 
 # Остановите контейнеры
-sudo docker compose down
+docker compose down
+docker compose down --rmi all  # удаляет и контейнеры и образы
+
 
 # Очистите кэш браузера (ОБЯЗАТЕЛЬНО!)
 # Или используйте режим инкогнито
 
 # Пересоберите и запустите
-sudo docker compose up -d --build 
+docker compose up -d --build 
 
 # Проверьте логи
-sudo docker compose logs strapi -f
+docker compose logs strapi -f
