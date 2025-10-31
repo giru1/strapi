@@ -103,9 +103,9 @@ function extractGalleryUrls(galleryHtml) {
 }
 
 // Функция для проверки доступности изображения
-async function checkImageAvailability(imageUrl) {
+async function checkImageAvailability(image) {
     try {
-        const response = await axios.head(imageUrl, {
+        const response = await axios.head(image, {
             timeout: 10000,
             validateStatus: function (status) {
                 return status < 500; // Принимаем все статусы кроме 5xx
@@ -113,7 +113,7 @@ async function checkImageAvailability(imageUrl) {
         });
 
         const isAvailable = response.status === 200;
-        console.log(`   📊 Статус изображения ${imageUrl}: ${response.status} ${isAvailable ? '✅' : '❌'}`);
+        console.log(`   📊 Статус изображения ${image}: ${response.status} ${isAvailable ? '✅' : '❌'}`);
 
         return {
             available: isAvailable,
@@ -122,7 +122,7 @@ async function checkImageAvailability(imageUrl) {
             contentLength: response.headers['content-length']
         };
     } catch (error) {
-        console.log(`   ❌ Изображение недоступно: ${imageUrl}`);
+        console.log(`   ❌ Изображение недоступно: ${image}`);
         return {
             available: false,
             error: error.message
@@ -131,19 +131,19 @@ async function checkImageAvailability(imageUrl) {
 }
 
 // Функция для загрузки одного изображения в Strapi
-async function uploadImageToStrapi(imageUrl) {
+async function uploadImageToStrapi(image) {
     try {
-        console.log(`🖼️ Загрузка изображения: ${imageUrl}`);
+        console.log(`🖼️ Загрузка изображения: ${image}`);
 
         // Сначала проверяем доступность изображения
-        const availability = await checkImageAvailability(imageUrl);
+        const availability = await checkImageAvailability(image);
         if (!availability.available) {
             console.log(`   ⏭️ Пропуск: изображение недоступно (статус: ${availability.status || 'error'})`);
             return null;
         }
 
         // Скачиваем изображение
-        const imageResponse = await axios.get(imageUrl, {
+        const imageResponse = await axios.get(image, {
             responseType: 'arraybuffer',
             timeout: 30000
         });
@@ -161,7 +161,7 @@ async function uploadImageToStrapi(imageUrl) {
         const form = new FormData();
 
         // Получаем имя файла из URL
-        const fileName = imageUrl.split('/').pop() || 'image.jpg';
+        const fileName = image.split('/').pop() || 'image.jpg';
         console.log(`   📁 Имя файла: ${fileName}`);
 
         form.append('files', Buffer.from(imageResponse.data), {
@@ -190,39 +190,39 @@ async function uploadImageToStrapi(imageUrl) {
             return null;
         }
     } catch (error) {
-        console.log(`❌ Ошибка загрузки изображения ${imageUrl}:`);
+        console.log(`❌ Ошибка загрузки изображения ${image}:`);
         logErrorDetails(error, 'uploadImageToStrapi');
         return null;
     }
 }
 
 // Функция для загрузки изображений галереи в Strapi и получения их ID
-async function uploadGalleryImages(imageUrls) {
+async function uploadGalleryImages(images) {
     const uploadedImageIds = [];
 
-    console.log(`📦 Начало загрузки ${imageUrls.length} изображений галереи`);
+    console.log(`📦 Начало загрузки ${images.length} изображений галереи`);
 
-    for (const [index, imageUrl] of imageUrls.entries()) {
+    for (const [index, image] of images.entries()) {
         try {
-            console.log(`\n🖼️ [${index + 1}/${imageUrls.length}] Загрузка изображения галереи`);
-            const imageId = await uploadImageToStrapi(imageUrl);
+            console.log(`\n🖼️ [${index + 1}/${images.length}] Загрузка изображения галереи`);
+            const imageId = await uploadImageToStrapi(image);
             if (imageId) {
                 uploadedImageIds.push(imageId);
                 console.log(`✅ Успешно загружено: ${imageId}`);
             } else {
-                console.log(`❌ Не удалось загрузить: ${imageUrl}`);
+                console.log(`❌ Не удалось загрузить: ${image}`);
             }
 
             // Пауза между загрузками
             await new Promise(resolve => setTimeout(resolve, 500));
 
         } catch (error) {
-            console.log(`❌ Критическая ошибка загрузки изображения галереи ${imageUrl}:`);
+            console.log(`❌ Критическая ошибка загрузки изображения галереи ${image}:`);
             logErrorDetails(error, 'uploadGalleryImages');
         }
     }
 
-    console.log(`🎉 Завершена загрузка галереи: ${uploadedImageIds.length}/${imageUrls.length} успешно`);
+    console.log(`🎉 Завершена загрузка галереи: ${uploadedImageIds.length}/${images.length} успешно`);
     return uploadedImageIds;
 }
 
@@ -424,9 +424,9 @@ async function importNews() {
                 // Загружаем основное изображение
                 let mainImageId = null;
                 if (item.imageLarge) {
-                    const mainImageUrl = `https://www.orgma.ru${item.imageLarge}`;
-                    console.log(`📸 Основное изображение: ${mainImageUrl}`);
-                    mainImageId = await uploadImageToStrapi(mainImageUrl);
+                    const mainImage = `https://www.orgma.ru${item.imageLarge}`;
+                    console.log(`📸 Основное изображение: ${mainImage}`);
+                    mainImageId = await uploadImageToStrapi(mainImage);
                 } else {
                     console.log('ℹ️  Основное изображение отсутствует');
                 }
@@ -461,7 +461,7 @@ async function importNews() {
                         introtext: item.introtext || '',
                         fulltext: item.fulltext || '',
                         created: item.created,
-                        imageurl: item.imageLarge ? `https://www.orgma.ru${item.imageLarge}` : null,
+                        image: item.imageLarge ? `https://www.orgma.ru${item.imageLarge}` : null,
                         category: categoryId,
                         author: authorId,
                         gallery: galleryImageIds
