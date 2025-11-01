@@ -1,6 +1,6 @@
 [
   {
-    "AllowedOrigins": ["db.web.orgma.ru"],
+    "AllowedOrigins": ["*"],
     "AllowedMethods": ["GET", "POST", "PUT", "DELETE"],
     "AllowedHeaders": ["*"],
     "ExposeHeaders": ["ETag"],
