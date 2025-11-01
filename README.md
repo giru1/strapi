@@ -107,4 +107,5 @@ mc alias set myminio http://localhost:9000 admin admin123
 mc mb myminio/assets.orgma.ru
 mc policy set public myminio/assets.orgma.ru
 
-npm run import-news
+# Запустите импорт
+docker exec orgma-strapi npm run import-news

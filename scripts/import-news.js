@@ -479,7 +479,7 @@ async function importNews() {
                         introtext: item.introtext || '',
                         fulltext: item.fulltext || '',
                         created: item.created,
-                        imageurl: item.imageLarge ? `https://www.orgma.ru${item.imageLarge}` : null,
+                        image: item.imageLarge ? `https://www.orgma.ru${item.imageLarge}` : null,
                         category: categoryId,
                         author: authorId,
                         gallery: galleryImageIds
