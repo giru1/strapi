@@ -88,9 +88,23 @@ docker compose down --rmi all  # удаляет и контейнеры и об�
 
 # Очистите кэш браузера (ОБЯЗАТЕЛЬНО!)
 # Или используйте режим инкогнито
+docker exec -it orgma-strapi /bin/sh
+
 
 # Пересоберите и запустите
 docker compose up -d --build 
 
 # Проверьте логи
 docker compose logs strapi -f
+
+
+
+# Войдите в MinIO контейнер
+docker exec -it orgma-minio bash
+
+# Создайте bucket используя mc (MinIO Client)
+mc alias set myminio http://localhost:9000 admin admin123
+mc mb myminio/assets.orgma.ru
+mc policy set public myminio/assets.orgma.ru
+
+npm run import-news

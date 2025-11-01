@@ -14,7 +14,7 @@ function logErrorDetails(error, context = '') {
         // Ошибка от сервера
         console.log(`   📡 Статус: ${error.response.status}`);
         console.log(`   📝 Сообщение: ${error.response.statusText}`);
-        console.log(`   🔗 URL: ${error.response.config ? error.response.config.url : 'Unknown'}`);
+        console.log(`   🔗 URL: ${error.response.config?.url}`);
 
         if (error.response.data) {
             console.log(`   📊 Данные ответа:`, JSON.stringify(error.response.data, null, 2));
@@ -103,9 +103,9 @@ function extractGalleryUrls(galleryHtml) {
 }
 
 // Функция для проверки доступности изображения
-async function checkImageAvailability(image) {
+async function checkImageAvailability(imageUrl) {
     try {
-        const response = await axios.head(image, {
+        const response = await axios.head(imageUrl, {
             timeout: 10000,
             validateStatus: function (status) {
                 return status < 500; // Принимаем все статусы кроме 5xx
@@ -113,7 +113,7 @@ async function checkImageAvailability(image) {
         });
 
         const isAvailable = response.status === 200;
-        console.log(`   📊 Статус изображения ${image}: ${response.status} ${isAvailable ? '✅' : '❌'}`);
+        console.log(`   📊 Статус изображения ${imageUrl}: ${response.status} ${isAvailable ? '✅' : '❌'}`);
 
         return {
             available: isAvailable,
@@ -122,7 +122,7 @@ async function checkImageAvailability(image) {
             contentLength: response.headers['content-length']
         };
     } catch (error) {
-        console.log(`   ❌ Изображение недоступно: ${image}`);
+        console.log(`   ❌ Изображение недоступно: ${imageUrl}`);
         return {
             available: false,
             error: error.message
@@ -131,45 +131,49 @@ async function checkImageAvailability(image) {
 }
 
 // Функция для загрузки одного изображения в Strapi
-async function uploadImageToStrapi(image) {
+async function uploadImageToStrapi(imageUrl) {
     try {
-        console.log(`🖼️ Загрузка изображения: ${image}`);
+        console.log(`🖼️ Загрузка изображения: ${imageUrl}`);
 
-        // Сначала проверяем доступность изображения
-        const availability = await checkImageAvailability(image);
+        // Проверяем доступность изображения
+        const availability = await checkImageAvailability(imageUrl);
         if (!availability.available) {
-            console.log(`   ⏭️ Пропуск: изображение недоступно (статус: ${availability.status || 'error'})`);
+            console.log(`   ⏭️ Пропуск: изображение недоступно`);
             return null;
         }
 
         // Скачиваем изображение
-        const imageResponse = await axios.get(image, {
+        const imageResponse = await axios.get(imageUrl, {
             responseType: 'arraybuffer',
-            timeout: 30000
+            timeout: 30000,
+            maxContentLength: 10 * 1024 * 1024 // 10MB limit
         });
 
-        // Проверяем размер изображения
         const imageSize = imageResponse.data.length;
         console.log(`   📏 Размер изображения: ${(imageSize / 1024 / 1024).toFixed(2)} MB`);
 
-        if (imageSize > 10 * 1024 * 1024) { // 10MB limit
-            console.log(`   ⚠️  Предупреждение: большой размер изображения`);
+        // Более строгая проверка размера
+        if (imageSize > 8 * 1024 * 1024) { // 8MB для запаса
+            console.log(`   ❌ Слишком большой размер: ${(imageSize / 1024 / 1024).toFixed(2)} MB`);
+            return null;
         }
 
-        // Создаем FormData для загрузки
+        // Создаем FormData
         const FormData = require('form-data');
         const form = new FormData();
 
-        // Получаем имя файла из URL
-        const fileName = image.split('/').pop() || 'image.jpg';
-        console.log(`   📁 Имя файла: ${fileName}`);
+        const fileName = imageUrl.split('/').pop() || 'image.jpg';
 
-        form.append('files', Buffer.from(imageResponse.data), {
+        // Исправленный способ добавления файла
+        form.append('files', imageResponse.data, {
             filename: fileName,
-            contentType: imageResponse.headers['content-type'] || 'image/jpeg'
+            contentType: imageResponse.headers['content-type'] || 'image/jpeg',
+            knownLength: imageSize // Добавляем известную длину
         });
 
-        // Загружаем в Strapi
+        console.log(`   📤 Отправка в Strapi...`);
+
+        // Загружаем в Strapi с улучшенной обработкой
         const uploadResponse = await axios.post(
             `${STRAPI_URL}/api/upload`,
             form,
@@ -178,7 +182,9 @@ async function uploadImageToStrapi(image) {
                     'Authorization': `Bearer ${API_TOKEN}`,
                     ...form.getHeaders()
                 },
-                timeout: 30000
+                timeout: 60000, // Увеличиваем таймаут
+                maxContentLength: 20 * 1024 * 1024,
+                maxBodyLength: 20 * 1024 * 1024
             }
         );
 
@@ -186,43 +192,55 @@ async function uploadImageToStrapi(image) {
             console.log(`✅ Изображение загружено: ${uploadResponse.data[0].id}`);
             return uploadResponse.data[0].id;
         } else {
-            console.log(`❌ Пустой ответ от Strapi при загрузке изображения`);
+            console.log(`❌ Пустой ответ от Strapi`);
             return null;
         }
     } catch (error) {
-        console.log(`❌ Ошибка загрузки изображения ${image}:`);
+        console.log(`❌ Ошибка загрузки изображения ${imageUrl}:`);
+
+        // Более детальная диагностика
+        if (error.code === 'ECONNRESET') {
+            console.log('   🔌 Ошибка соединения: таймаут или разрыв');
+        } else if (error.response?.status === 413) {
+            console.log('   📦 Ошибка: слишком большой файл');
+        } else if (error.response?.status === 500) {
+            console.log('   🖥️  Внутренняя ошибка сервера Strapi');
+            // Логируем дополнительные детали
+            console.log('   🔍 Проверьте логи Strapi для деталей');
+        }
+
         logErrorDetails(error, 'uploadImageToStrapi');
         return null;
     }
 }
 
 // Функция для загрузки изображений галереи в Strapi и получения их ID
-async function uploadGalleryImages(images) {
+async function uploadGalleryImages(imageUrls) {
     const uploadedImageIds = [];
 
-    console.log(`📦 Начало загрузки ${images.length} изображений галереи`);
+    console.log(`📦 Начало загрузки ${imageUrls.length} изображений галереи`);
 
-    for (const [index, image] of images.entries()) {
+    for (const [index, imageUrl] of imageUrls.entries()) {
         try {
-            console.log(`\n🖼️ [${index + 1}/${images.length}] Загрузка изображения галереи`);
-            const imageId = await uploadImageToStrapi(image);
+            console.log(`\n🖼️ [${index + 1}/${imageUrls.length}] Загрузка изображения галереи`);
+            const imageId = await uploadImageToStrapi(imageUrl);
             if (imageId) {
                 uploadedImageIds.push(imageId);
                 console.log(`✅ Успешно загружено: ${imageId}`);
             } else {
-                console.log(`❌ Не удалось загрузить: ${image}`);
+                console.log(`❌ Не удалось загрузить: ${imageUrl}`);
             }
 
             // Пауза между загрузками
             await new Promise(resolve => setTimeout(resolve, 500));
 
         } catch (error) {
-            console.log(`❌ Критическая ошибка загрузки изображения галереи ${image}:`);
+            console.log(`❌ Критическая ошибка загрузки изображения галереи ${imageUrl}:`);
             logErrorDetails(error, 'uploadGalleryImages');
         }
     }
 
-    console.log(`🎉 Завершена загрузка галереи: ${uploadedImageIds.length}/${images.length} успешно`);
+    console.log(`🎉 Завершена загрузка галереи: ${uploadedImageIds.length}/${imageUrls.length} успешно`);
     return uploadedImageIds;
 }
 
@@ -424,9 +442,9 @@ async function importNews() {
                 // Загружаем основное изображение
                 let mainImageId = null;
                 if (item.imageLarge) {
-                    const mainImage = `https://www.orgma.ru${item.imageLarge}`;
-                    console.log(`📸 Основное изображение: ${mainImage}`);
-                    mainImageId = await uploadImageToStrapi(mainImage);
+                    const mainImageUrl = `https://www.orgma.ru${item.imageLarge}`;
+                    console.log(`📸 Основное изображение: ${mainImageUrl}`);
+                    mainImageId = await uploadImageToStrapi(mainImageUrl);
                 } else {
                     console.log('ℹ️  Основное изображение отсутствует');
                 }
@@ -461,7 +479,7 @@ async function importNews() {
                         introtext: item.introtext || '',
                         fulltext: item.fulltext || '',
                         created: item.created,
-                        image: item.imageLarge ? `https://www.orgma.ru${item.imageLarge}` : null,
+                        imageurl: item.imageLarge ? `https://www.orgma.ru${item.imageLarge}` : null,
                         category: categoryId,
                         author: authorId,
                         gallery: galleryImageIds

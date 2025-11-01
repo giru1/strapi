@@ -6,3 +6,6 @@ COPY cors.json /etc/minio/cors.json
 EXPOSE 9000 9001
 
 CMD ["server", "/data", "--console-address", ":9001"]\
+
+
+
