@@ -39,6 +39,8 @@ services:
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=admin123
+      - MINIO_BROWSER_REDIRECT_URL=https://s3.web.orgma.ru
+      - MINIO_SERVER_URL=https://s3.web.orgma.ru
     volumes:
       - minio-data:/data
     restart: unless-stopped
