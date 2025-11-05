@@ -41,11 +41,14 @@ services:
       - MINIO_ROOT_PASSWORD=admin123
       - MINIO_BROWSER_REDIRECT_URL=https://s3.web.orgma.ru
 #      - MINIO_SERVER_URL=https://s3.web.orgma.ru
+      - MINIO_API_ADDRESS=:9000
+      - MINIO_CONSOLE_ADDRESS=:9001
+    command: server /data --address ":9000" --console-address ":9001"
     volumes:
       - minio-data:/data
     restart: unless-stopped
-    networks:
-      - orgma-network
+#    networks:
+#      - orgma-network
 
 volumes:
   strapi-data:
